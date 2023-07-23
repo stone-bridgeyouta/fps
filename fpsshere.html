@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FPS測定</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: #007bff;
+        }
+        #fps {
+            font-size: 48px;
+            color: #007bff;
+        }
+        p {
+            font-size: 18px;
+            margin-top: 10px;
+            color: #555;
+        }
+        #start-button, #share-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #start-button:hover, #share-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>FPS測定</h1>
+        <button id="start-button" onclick="startMeasurement()">測定開始</button>
+        <p>このページのフレームレートは：<span id="fps">計測中...</span> FPS</p>
+        <button id="share-button" onclick="shareResult()" disabled>結果をシェア</button>
+    </div>
+
+    <script>
+        let fpsElement = document.getElementById("fps");
+        let frames = 0;
+        let fps = 0;
+        let isMeasuring = false;
+        let startTime;
+
+        function startMeasurement() {
+            if (!isMeasuring) {
+                isMeasuring = true;
+                startTime = performance.now();
+                updateFPS();
+                document.getElementById("share-button").disabled = true;
+            }
+        }
+
+        function updateFPS() {
+            if (isMeasuring) {
+                frames++;
+                requestAnimationFrame(updateFPS);
+
+                const now = performance.now();
+                const secondsPassed = (now - startTime) / 1000;
+                if (secondsPassed >= 1) {
+                    fps = Math.round(frames / secondsPassed);
+                    fpsElement.textContent = fps;
+                    frames = 0;
+                    startTime = now;
+                    isMeasuring = false;
+                    document.getElementById("share-button").disabled = false;
+                }
+            }
+        }
+
+        function shareResult() {
+            const shareMessage = `このページのフレームレートは ${fps} FPS です。`;
+            // ここで結果をシェアする処理を追加（例：クリップボードにコピー、ソーシャルメディアに投稿など）
+            alert(shareMessage); // 仮のアラートで結果を表示する例
+        }
+    </script>
+</body>
+</html>
